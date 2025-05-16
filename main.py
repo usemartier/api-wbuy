@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 import requests
-import os
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -38,7 +37,6 @@ def consulta_pedido():
                 p for p in pedidos
                 if p.get("cliente", {}).get("doc1", "").replace(".", "").replace("-", "") == cpf
             ]
-
             pedidos_do_cpf.sort(key=lambda x: x.get("data", ""), reverse=True)
             pedidos_do_cpf = pedidos_do_cpf[:2]
 
@@ -55,7 +53,6 @@ def consulta_pedido():
                 "status": response.status_code,
                 "resposta": response.text
             }), 500
-
     except Exception as e:
         return jsonify({"erro": "Erro interno", "detalhes": str(e)}), 500
 
@@ -93,6 +90,5 @@ def consulta_por_pedido():
                 "status": response.status_code,
                 "resposta": response.text
             }), 500
-
     except Exception as e:
         return jsonify({"erro": "Erro interno", "detalhes": str(e)}), 500
