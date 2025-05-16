@@ -44,7 +44,10 @@ def consulta_pedido():
                     "pedidos": pedidos_do_cpf
                 })
             else:
-                return jsonify({"mensagem": "Nenhum pedido encontrado para o CPF."}), 404
+                return jsonify({
+                    "quantidade": 0,
+                    "mensagem": f"Nenhum pedido encontrado para o CPF {cpf}."
+                }), 200
         else:
             return jsonify({
                 "erro": "Erro ao consultar WBuy",
