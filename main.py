@@ -2,17 +2,19 @@ from flask import Flask, request, jsonify
 import requests
 import os
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
 WBUY_TOKEN = "Bearer N2Y3ODFjZjgtZmQyMi00NWZkLWFjZjctZjIwOTVkYzBkN2QyOjk4ODg5YWJlOGI5NDQ3YmZhOTkxNzhkZGE2MjJkMGVm"
 
-# Rota de monitoramento (health check)
+# Rota de monitoramento
 @app.route("/", methods=["GET", "HEAD"])
 def health_check():
     return "OK", 200
 
+# Consulta por CPF
 @app.route("/consulta-pedido", methods=["POST"])
 def consulta_pedido():
     try:
@@ -32,7 +34,10 @@ def consulta_pedido():
 
         if response.status_code == 200:
             pedidos = response.json().get("data", [])
-            pedidos_do_cpf = [p for p in pedidos if p.get("cliente", {}).get("doc1", "").replace(".", "").replace("-", "") == cpf]
+            pedidos_do_cpf = [
+                p for p in pedidos
+                if p.get("cliente", {}).get("doc1", "").replace(".", "").replace("-", "") == cpf
+            ]
 
             pedidos_do_cpf.sort(key=lambda x: x.get("data", ""), reverse=True)
             pedidos_do_cpf = pedidos_do_cpf[:2]
@@ -54,6 +59,7 @@ def consulta_pedido():
     except Exception as e:
         return jsonify({"erro": "Erro interno", "detalhes": str(e)}), 500
 
+# Consulta por número do pedido
 @app.route("/consulta-por-pedido", methods=["POST"])
 def consulta_por_pedido():
     try:
@@ -90,3 +96,8 @@ def consulta_por_pedido():
 
     except Exception as e:
         return jsonify({"erro": "Erro interno", "detalhes": str(e)}), 500
+
+# Porta obrigatória para funcionar na Render
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
