@@ -96,8 +96,3 @@ def consulta_por_pedido():
 
     except Exception as e:
         return jsonify({"erro": "Erro interno", "detalhes": str(e)}), 500
-
-# Porta obrigatória para funcionar na Render
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
